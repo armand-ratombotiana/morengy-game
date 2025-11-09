@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { FloatingParticles } from "./FloatingParticles";
 
 interface HeroSectionProps {
   title: string;
@@ -28,6 +29,7 @@ export function HeroSection({
           {/* Placeholder for video - replace with actual video URL */}
           <div className="absolute inset-0 bg-gradient-to-br from-morengy-red-dark via-morengy-black to-morengy-green-dark animate-pulse" />
           <div className="absolute inset-0 hero-overlay" />
+          <FloatingParticles />
         </div>
       ) : (
         <div
@@ -39,6 +41,7 @@ export function HeroSection({
           }}
         >
           <div className="absolute inset-0 hero-overlay" />
+          <FloatingParticles />
         </div>
       )}
 
@@ -78,17 +81,19 @@ export function HeroSection({
               {primaryCTA && (
                 <Link
                   href={primaryCTA.href}
-                  className="px-8 py-4 bg-morengy-red hover:bg-morengy-red-dark text-white font-montserrat font-bold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
+                  className="relative px-8 py-4 bg-morengy-red hover:bg-morengy-red-dark text-white font-montserrat font-bold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg btn-glow overflow-hidden group"
                 >
-                  {primaryCTA.text}
+                  <span className="relative z-10">{primaryCTA.text}</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700" />
                 </Link>
               )}
               {secondaryCTA && (
                 <Link
                   href={secondaryCTA.href}
-                  className="px-8 py-4 bg-morengy-green hover:bg-morengy-green-dark text-white font-montserrat font-bold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
+                  className="relative px-8 py-4 bg-morengy-green hover:bg-morengy-green-dark text-white font-montserrat font-bold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg overflow-hidden group"
                 >
-                  {secondaryCTA.text}
+                  <span className="relative z-10">{secondaryCTA.text}</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700" />
                 </Link>
               )}
             </motion.div>

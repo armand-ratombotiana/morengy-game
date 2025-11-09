@@ -22,6 +22,13 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "MORENGY Team" }],
   creator: "MORENGY Team",
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
   openGraph: {
     type: "website",
     locale: "en_US",

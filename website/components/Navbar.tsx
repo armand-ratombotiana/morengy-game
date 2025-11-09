@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 
@@ -23,7 +24,21 @@ export function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
+          <Link href="/" className="flex items-center space-x-3">
+            <motion.div
+              whileHover={{ scale: 1.05, rotate: [0, -5, 5, 0] }}
+              transition={{ type: "spring", stiffness: 400 }}
+              className="relative"
+            >
+              <Image
+                src="/icon.svg"
+                alt="MORENGY Logo"
+                width={40}
+                height={40}
+                className="md:w-12 md:h-12"
+                priority
+              />
+            </motion.div>
             <motion.div
               className="text-2xl md:text-3xl font-montserrat font-black"
               whileHover={{ scale: 1.05 }}
@@ -40,9 +55,10 @@ export function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-morengy-white hover:text-morengy-red transition-colors duration-200 font-medium"
+                className="relative group text-morengy-white hover:text-morengy-red transition-colors duration-200 font-medium py-2"
               >
                 {link.label}
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-morengy-red to-morengy-green transition-all duration-300 group-hover:w-full" />
               </Link>
             ))}
           </div>
