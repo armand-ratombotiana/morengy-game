@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+@layer base {
+  * {
+    @apply border-morengy-black;
+  }
+
+  body {
+    @apply bg-morengy-dark-bg text-morengy-white font-poppins antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-montserrat font-bold;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Custom gradient backgrounds */
+  .gradient-red {
+    background: linear-gradient(135deg, #C0392B 0%, #922B21 100%);
+  }
+
+  .gradient-green {
+    background: linear-gradient(135deg, #27AE60 0%, #1E8449 100%);
+  }
+
+  /* Hero video overlay */
+  .hero-overlay {
+    background: linear-gradient(
+      to bottom,
+      rgba(13, 13, 13, 0.7) 0%,
+      rgba(13, 13, 13, 0.5) 50%,
+      rgba(13, 13, 13, 0.9) 100%
+    );
+  }
+
+  /* Card hover effects */
+  .card-hover {
+    @apply transition-all duration-300 hover:scale-105 hover:shadow-2xl;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+}
