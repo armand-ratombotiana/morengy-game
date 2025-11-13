@@ -1,0 +1,43 @@
+# Fighter Data - Mahajanga Veteran
+# Create this as a ScriptableObject in Unity Editor
+
+## Fighter Identity
+Fighter Name: Mahajanga Veteran
+Fighting Style: Power Morengy
+Region: Mahajanga
+Backstory: |
+  A seasoned warrior from Mahajanga with decades of fighting experience.
+  Known for devastating power strikes that can end fights in seconds.
+  Despite his age, his strength is unmatched. He fights to pass on the
+  traditional Morengy values of respect and honor to the next generation.
+
+## Core Stats (1-100)
+Power: 95
+Speed: 40
+Defense: 75
+Stamina: 85
+Charisma: 55
+
+## Combat Properties
+Max Health: 120
+Light Attack Damage: 15
+Heavy Attack Damage: 35
+Special Attack Damage: 60
+
+## Special Moves
+Special Move Name: Mahajanga Earthquake
+Special Move Description: |
+  A earth-shattering overhead strike that can break through any defense.
+  Channels decades of training into one devastating blow. Guards are warned
+  to stand back when this technique is unleashed.
+
+## Unlock Status
+Is Unlocked: false
+Unlock Cost: 1000
+Unlock Requirement: Defeat 10 opponents with KO
+
+## Notes
+- Highest power and health in roster
+- Slow but unstoppable
+- Perfect for players who like heavy hitters
+- Archetype: Tank/Brawler

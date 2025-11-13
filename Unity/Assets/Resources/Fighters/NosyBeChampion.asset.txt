@@ -1,0 +1,43 @@
+# Fighter Data - Nosy Be Champion
+# Create this as a ScriptableObject in Unity Editor
+
+## Fighter Identity
+Fighter Name: Nosy Be Champion
+Fighting Style: Island Style
+Region: Nosy Be
+Backstory: |
+  The undefeated champion of Nosy Be, famous for his evasive fighting style
+  inspired by the island's tropical wildlife. Quick as a lemur, strikes like
+  a fossa. He fights to fund his family's fishing business and protect the
+  island's natural beauty from exploitation.
+
+## Core Stats (1-100)
+Power: 50
+Speed: 90
+Defense: 45
+Stamina: 65
+Technique: 75
+Charisma: 70
+
+## Combat Properties
+Max Health: 95
+Light Attack Damage: 10
+Heavy Attack Damage: 22
+Special Attack Damage: 40
+
+## Special Moves
+Special Move Name: Island Tempest
+Special Move Description: |
+  A blinding flurry of strikes from all angles, mimicking the unpredictable
+  tropical storms. Extremely fast and difficult to defend against.
+
+## Unlock Status
+Is Unlocked: true
+Unlock Cost: 500
+Unlock Requirement: Complete 5 matches
+
+## Notes
+- Fastest fighter in the roster
+- Low power compensated by speed and combos
+- Excellent for technical players
+- Archetype: Pure Speedster

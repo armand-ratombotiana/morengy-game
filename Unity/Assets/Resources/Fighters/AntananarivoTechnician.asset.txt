@@ -1,0 +1,45 @@
+# Fighter Data - Antananarivo Technician
+# Create this as a ScriptableObject in Unity Editor
+
+## Fighter Identity
+Fighter Name: Antananarivo Technician
+Fighting Style: Modern Morengy
+Region: Antananarivo (Capital)
+Backstory: |
+  A young fighter from the capital who studied traditional Morengy alongside
+  modern martial arts. Combines the wisdom of the old ways with contemporary
+  training methods. A student of the game, he analyzes every opponent and
+  adapts his strategy mid-fight. Fights to prove Morengy can evolve while
+  maintaining its cultural roots.
+
+## Core Stats (1-100)
+Power: 55
+Speed: 70
+Defense: 60
+Stamina: 60
+Technique: 95
+Charisma: 60
+
+## Combat Properties
+Max Health: 100
+Light Attack Damage: 11
+Heavy Attack Damage: 24
+Special Attack Damage: 42
+
+## Special Moves
+Special Move Name: Capital Convergence
+Special Move Description: |
+  A perfectly executed combination that flows from traditional Morengy forms
+  into modern striking techniques. Each hit sets up the next with mathematical
+  precision. Masters say it's like watching a chess grandmaster play combat.
+
+## Unlock Status
+Is Unlocked: false
+Unlock Cost: 750
+Unlock Requirement: Execute 50 perfect combos
+
+## Notes
+- Highest technique stat - combo specialist
+- Balanced stats make him versatile
+- Rewards patient, strategic play
+- Archetype: Technical Fighter

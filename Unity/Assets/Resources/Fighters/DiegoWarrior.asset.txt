@@ -1,0 +1,45 @@
+# Fighter Data - Diego Warrior
+# This is a template for creating FighterData ScriptableObjects in Unity
+# In Unity Editor: Right-click > Create > Morengy > Fighter Data
+
+## Fighter Identity
+Fighter Name: Diego Warrior
+Fighting Style: Northern Morengy
+Region: Diego Suarez
+Backstory: |
+  A young champion from the northern port city of Diego Suarez, known for his
+  lightning-fast jabs and relentless pressure. Raised watching the harbor fights,
+  he learned to move like the ocean waves - fluid, unpredictable, and powerful.
+  His dream is to unite all regional Morengy styles and preserve the tradition
+  for future generations.
+
+## Core Stats (1-100)
+Power: 60
+Speed: 75
+Defense: 55
+Stamina: 70
+Technique: 65
+Charisma: 80
+
+## Combat Properties
+Max Health: 100
+Light Attack Damage: 12
+Heavy Attack Damage: 28
+Special Attack Damage: 45
+
+## Special Moves
+Special Move Name: Diego Hurricane
+Special Move Description: |
+  A rapid spinning combination inspired by the cyclones that hit the northern coast.
+  Delivers multiple strikes in quick succession, ending with a devastating uppercut.
+
+## Unlock Status
+Is Unlocked: true
+Unlock Cost: 0
+Unlock Requirement: Starter fighter
+
+## Notes
+- Balanced fighter good for beginners
+- High speed allows for quick combos
+- Strong charisma gains special meter quickly
+- Archetype: Speedster/Showman hybrid
