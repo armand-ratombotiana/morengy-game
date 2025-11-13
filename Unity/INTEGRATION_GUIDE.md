@@ -475,6 +475,204 @@ namespace Morengy.Core
 
 ---
 
+## 🤖 Advanced Systems Integration
+
+### AI Learning System
+
+**Setup:**
+1. Add AILearningSystem component to AI fighter
+2. Set learning parameters (pattern length, confidence threshold)
+3. Enable learning in inspector
+
+**Integration with CombatSystem:**
+
+```csharp
+// In CombatSystem.cs - ProcessHit() method
+// Record player actions for AI learning
+if (AILearningSystem.Instance != null && isPlayerAttack)
+{
+    ActionType action = currentAttackType switch
+    {
+        AttackType.Light => ActionType.LightAttack,
+        AttackType.Heavy => ActionType.HeavyAttack,
+        AttackType.Special => ActionType.SpecialAttack,
+        _ => ActionType.Aggressive
+    };
+
+    AILearningSystem.Instance.RecordPlayerAction(action, wasSuccessful);
+}
+```
+
+**Integration with AIBehavior:**
+
+```csharp
+// In AIBehavior.cs - ChooseAction() method
+// Get adaptive action from learning system
+if (AILearningSystem.Instance != null)
+{
+    ActionType adaptedAction = AILearningSystem.Instance.GetAdaptedAction(distanceToOpponent);
+    // Use adaptedAction to inform AI decision
+}
+```
+
+---
+
+### Career Mode System
+
+**Setup:**
+1. Create empty GameObject named "CareerMode"
+2. Add CareerMode component
+3. Configure fight progression settings
+
+**Starting Career:**
+
+```csharp
+// From main menu or career selection screen
+if (CareerMode.Instance != null)
+{
+    CareerMode.Instance.StartNewCareer(playerFighterName);
+}
+```
+
+**Processing Match Results:**
+
+```csharp
+// In GameManager.cs - EndMatch() method
+if (CareerMode.Instance != null && CareerMode.Instance.IsCareerActive)
+{
+    ComboStats comboStats = comboTracker.GetStats();
+
+    CareerMode.Instance.ProcessFightResult(
+        playerWon: player1Score > player2Score,
+        roundsWon: player1Score,
+        roundsLost: player2Score,
+        comboStats: comboStats
+    );
+}
+```
+
+---
+
+### Player Profile System
+
+**Setup:**
+1. Create empty GameObject named "PlayerProfile"
+2. Add PlayerProfile component
+3. Enable auto-save if desired
+
+**Recording Match Results:**
+
+```csharp
+// In GameManager.cs - EndMatch() method
+if (PlayerProfile.Instance != null)
+{
+    bool playerWon = player1Score > player2Score;
+
+    PlayerProfile.Instance.RecordMatchResult(
+        playerWon,
+        player1Score,
+        player2Score
+    );
+}
+```
+
+**Recording Combat Stats:**
+
+```csharp
+// In CombatSystem.cs - ProcessHit() method (after hit confirmed)
+if (PlayerProfile.Instance != null && isPlayer)
+{
+    PlayerProfile.Instance.RecordCombatStats(
+        hits: 1,
+        heavyHits: attackType == AttackType.Heavy ? 1 : 0,
+        specials: attackType == AttackType.Special ? 1 : 0,
+        blocks: 0,
+        dodges: 0,
+        damage: finalDamage
+    );
+}
+```
+
+**Recording Combos:**
+
+```csharp
+// In ComboTracker.cs - FinishCombo() method
+if (PlayerProfile.Instance != null)
+{
+    PlayerProfile.Instance.RecordCombo(currentCombo, totalDamageInCombo);
+}
+```
+
+---
+
+### Rival AI System
+
+**Setup:**
+1. Add RivalAI component to special AI opponent
+2. Set rival name and personality
+3. Enable evolution and learning
+
+**Match Integration:**
+
+```csharp
+// In GameManager.cs - StartMatch() method
+RivalAI rival = FindObjectOfType<RivalAI>();
+if (rival != null)
+{
+    rival.OnMatchStart();
+}
+
+// In GameManager.cs - EndMatch() method
+if (rival != null)
+{
+    bool rivalWon = player2Score > player1Score; // Assuming rival is player 2
+    rival.OnMatchEnd(rivalWon);
+}
+
+// In GameManager.cs - EndRound() method
+if (rival != null)
+{
+    rival.OnRoundEnd(rivalWonRound);
+}
+```
+
+**Displaying Rival Taunts:**
+
+```csharp
+// Subscribe to taunt events
+RivalAI rival = FindObjectOfType<RivalAI>();
+if (rival != null)
+{
+    rival.OnRivalTaunt += (taunt) => {
+        if (UI.RoundAnnouncer.Instance != null)
+        {
+            UI.RoundAnnouncer.Instance.AnnounceRival(taunt);
+        }
+    };
+}
+```
+
+---
+
+## 🔗 Advanced System Connections
+
+### AI Learning → Rival AI
+- Rival uses learning data to adapt strategy
+- Pattern recognition informs evolution
+- Player tendencies shape rival behavior
+
+### Career Mode → Player Profile
+- Career progress awards experience
+- Unlocks tracked in profile
+- Statistics contribute to achievements
+
+### Player Profile → AI Learning
+- Win rate adjusts AI difficulty
+- Play style influences AI adaptation
+- Performance metrics guide balancing
+
+---
+
 ## 📚 Next Steps
 
 After integration:
@@ -482,10 +680,12 @@ After integration:
 1. ✅ Test all systems together
 2. ✅ Verify event flow works correctly
 3. ✅ Check for console errors
-4. ⏳ Add 3D models and animations
-5. ⏳ Create particle effect prefabs
-6. ⏳ Add audio clips
-7. ⏳ Polish and balance
+4. ✅ Integrate advanced AI systems
+5. ✅ Setup career and progression
+6. ⏳ Add 3D models and animations
+7. ⏳ Create particle effect prefabs
+8. ⏳ Add audio clips
+9. ⏳ Polish and balance
 
 ---
 
@@ -496,4 +696,4 @@ After integration:
 ---
 
 *Last Updated: January 13, 2025*
-*Compatible with all Phase 1 systems*
+*Compatible with all Phase 1 & Advanced systems*
