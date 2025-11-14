@@ -1,29 +1,38 @@
 # 🎯 Morengy Game - Implementation Roadmap
 
-**Decision:** Fast to Market - Unity Premium Single-Player (4-5 months)
-**Focus:** Complete single-player experience with local versus
-**Date:** January 13, 2025
+**Decision:** Fast to Market - Unity Premium with **Online Multiplayer**
+**Focus:** Complete fighting game with single-player AND competitive online play
+**Date:** January 13, 2025 (Updated)
+**Timeline:** **7-8 months** (28 weeks)
 
 ---
 
 ## 📋 Strategic Decision Summary
 
-### ✅ Chosen Path: Unity Premium Single-Player
+### ✅ Chosen Path: Unity Premium with Multiplayer at Launch
 
-**Why This Path:**
-1. **Existing Foundation:** 6,864 lines of quality C# code (52% complete)
-2. **Exceptional AI Systems:** Production-ready learning and adaptation (90% complete)
-3. **Faster Time to Market:** 4-5 months vs 12+ months for Unreal rebuild
-4. **Lower Risk:** Proven technology stack and architecture
-5. **Cultural Mission:** Focus on celebrating Malagasy heritage, not just tech showcase
+**Why Include Multiplayer:**
+1. **Competitive Scene:** Fighting games thrive with online versus
+2. **Replayability:** Online extends game life significantly
+3. **Community Building:** Ranked matchmaking creates engaged community
+4. **Value Proposition:** $19.99 justified by full online experience
+5. **Market Expectation:** Modern fighting games need online day 1
 
-**Strategic Tradeoffs Accepted:**
-- ❌ Not using Unreal Engine 5 (Lumen, Nanite, native motion matching)
-- ❌ Multiplayer deferred to post-launch DLC
-- ❌ F2P conversion only if game proves successful
+**Timeline Extension:**
+- Original plan: 4-5 months (single-player only)
+- **New timeline: 7-8 months** (includes rollback netcode + matchmaking)
+
+**Additional Investment:**
+- Development: +$4,000 (networking specialist, 80 hours)
+- Monthly costs: $10-210/month (PlayFab scales with users)
+- Extended testing: +4 weeks (alpha/beta)
+
+**Strategic Tradeoffs Maintained:**
+- ❌ Not using Unreal Engine 5 (Unity has good netcode solutions)
 - ✅ Will upgrade URP → HDRP for better visuals
 - ✅ Motion matching alternatives via Unity plugins/Mixamo
-- ✅ Focus on what makes game unique: AI and cultural authenticity
+- ✅ Focus on unique AI + cultural authenticity + rollback netcode quality
+- ❌ F2P conversion only if game proves successful (premium at launch)
 
 ---
 
@@ -277,7 +286,130 @@ public class EnvironmentalCombat : MonoBehaviour
 
 ---
 
-### Phase 4: Audio & Music (Weeks 10-11) 🟡 MEDIUM PRIORITY
+### Phase 3.5: Rollback Netcode Foundation (Weeks 10-13) 🔴 CRITICAL PRIORITY
+
+#### 1. Deterministic System Refactor (Week 10)
+**Goal:** Make all combat systems deterministic for rollback netcode
+
+**New Script: `DeterministicRandom.cs`**
+```csharp
+public class DeterministicRandom
+{
+    private uint seed;
+
+    public void SetSeed(uint newSeed) => seed = newSeed;
+
+    public float Range(float min, float max)
+    {
+        seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+        return min + ((float)seed / 0x7fffffff) * (max - min);
+    }
+}
+```
+
+**Refactor Tasks:**
+- [ ] Replace all `Random.Range()` with `DeterministicRandom.Range()`
+- [ ] Replace all `Random.value` calls
+- [ ] Remove `Time.deltaTime` dependencies (use fixed 1/60)
+- [ ] Convert critical floats to fixed-point math
+- [ ] Make combat damage calculations deterministic
+- [ ] Ensure animation states are reproducible
+
+**Files to Refactor:**
+- CombatSystem.cs - Damage calculations
+- FighterController.cs - Movement physics
+- AIBehavior.cs - Decision making randomness
+- GrapplingSystem.cs - Grapple outcomes
+
+#### 2. State Snapshot System (Week 11)
+**Goal:** Save/restore complete game state for rollback
+
+**New Script: `RollbackManager.cs`**
+```csharp
+public class RollbackManager : MonoBehaviour
+{
+    [System.Serializable]
+    public struct GameStateSnapshot
+    {
+        public int frame;
+
+        // Fighter 1 state
+        public Vector3 p1Position;
+        public float p1Health;
+        public float p1Stamina;
+        public float p1SpecialMeter;
+        public int p1AnimationState;
+
+        // Fighter 2 state
+        public Vector3 p2Position;
+        public float p2Health;
+        public float p2Stamina;
+        public float p2SpecialMeter;
+        public int p2AnimationState;
+
+        // Match state
+        public int currentRound;
+        public float roundTimer;
+    }
+
+    private GameStateSnapshot[] stateHistory = new GameStateSnapshot[60]; // 1 second
+
+    public GameStateSnapshot CaptureState() { /* ... */ }
+    public void RestoreState(GameStateSnapshot state) { /* ... */ }
+}
+```
+
+**Tasks:**
+- [ ] Create RollbackManager.cs (estimated 400 lines)
+- [ ] Implement state capture for all fighter data
+- [ ] Implement state restoration
+- [ ] Create snapshot ring buffer (60 frames)
+- [ ] Test state save/restore accuracy
+- [ ] Compress snapshot data (target < 200 bytes)
+
+#### 3. Input Prediction & Rollback (Week 12-13)
+**Goal:** Implement GGPO-style rollback netcode
+
+**New Script: `NetworkInputManager.cs`**
+```csharp
+public struct PlayerInput
+{
+    public int frame;
+    public byte buttons; // Bitfield
+    public Vector2 movement;
+
+    public bool IsLightAttack => (buttons & (1 << 0)) != 0;
+    public bool IsHeavyAttack => (buttons & (1 << 1)) != 0;
+    public bool IsSpecialAttack => (buttons & (1 << 2)) != 0;
+    public bool IsBlock => (buttons & (1 << 3)) != 0;
+    public bool IsDodge => (buttons & (1 << 4)) != 0;
+    public bool IsGrapple => (buttons & (1 << 5)) != 0;
+}
+```
+
+**Tasks:**
+- [ ] Create NetworkInputManager.cs (estimated 350 lines)
+- [ ] Implement input serialization (12 bytes/frame)
+- [ ] Build input prediction (repeat last input)
+- [ ] Implement input confirmation system
+- [ ] Create rollback detection (misprediction check)
+- [ ] Build frame resimulation
+- [ ] Test rollback with artificial latency
+- [ ] Optimize rollback performance (< 16ms)
+
+**Rollback Algorithm:**
+1. Capture local input
+2. Send to remote player
+3. Predict remote input (repeat last)
+4. Simulate frame with both inputs
+5. Save state snapshot
+6. When remote input arrives:
+   - If matches prediction: continue
+   - If different: rollback and resimulate
+
+---
+
+### Phase 4: Audio & Music (Weeks 14-15) 🟡 MEDIUM PRIORITY
 
 #### 1. Malagasy Music Integration (Week 10)
 **Goal:** Authentic cultural soundtrack
@@ -359,7 +491,98 @@ public class EnvironmentalCombat : MonoBehaviour
 
 ---
 
-### Phase 5: Training Mode & Polish (Weeks 12-14) 🟡 MEDIUM PRIORITY
+### Phase 4.5: Matchmaking & Backend (Weeks 16-17) 🔴 CRITICAL PRIORITY
+
+#### 1. PlayFab Integration (Week 16)
+
+**Goal:** Authentication, matchmaking, leaderboards
+
+**Tasks:**
+
+- [ ] Install PlayFab Unity SDK
+- [ ] Implement account creation/login
+- [ ] Create matchmaking queue configuration
+- [ ] Build MMR/ELO system (starting 1000 MMR)
+- [ ] Implement ranked and casual queues
+- [ ] Create leaderboard integration
+- [ ] Add anti-cheat validation (server-side)
+
+**New Script: `MatchmakingManager.cs`**
+
+```csharp
+public class MatchmakingManager : MonoBehaviour
+{
+    public void StartMatchmaking(MatchmakingMode mode)
+    {
+        // PlayFab matchmaking ticket creation
+        // Poll for match found
+        // Connect to opponent via P2P
+    }
+
+    private int CalculateNewMMR(int currentMMR, int opponentMMR, bool won)
+    {
+        // ELO calculation: K-factor = 32
+        float expected = 1f / (1f + Mathf.Pow(10, (opponentMMR - currentMMR) / 400f));
+        float actual = won ? 1f : 0f;
+        return currentMMR + Mathf.RoundToInt(32 * (actual - expected));
+    }
+}
+```
+
+**Matchmaking Rules:**
+- Search ±100 MMR initially
+- Expand to ±200 MMR after 30 seconds
+- Expand to ±400 MMR after 60 seconds
+- Give up after 120 seconds
+
+#### 2. Lobby System (Week 17)
+
+**Goal:** Online menu, connection quality, rematch
+
+**UI Components:**
+- Quick Match button
+- Ranked Match button
+- Create Private Lobby
+- Join Friend's Lobby
+- Connection quality indicator (ping display)
+- Rematch system
+
+**New Script: `OnlineLobby.cs`**
+
+```csharp
+public class OnlineLobby : MonoBehaviour
+{
+    public void OnQuickMatch()
+    {
+        MatchmakingManager.Instance.StartMatchmaking(MatchmakingMode.Casual);
+    }
+
+    public void OnRankedMatch()
+    {
+        MatchmakingManager.Instance.StartMatchmaking(MatchmakingMode.Ranked);
+    }
+
+    public void UpdatePing(float ping)
+    {
+        // Color code: <50ms green, <100ms yellow, <150ms orange, >150ms red
+        pingDisplay.text = $"{ping:F0}ms";
+        pingDisplay.color = GetPingColor(ping);
+    }
+}
+```
+
+**Tasks:**
+- [ ] Create online menu scene
+- [ ] Build lobby UI with mode selection
+- [ ] Implement connection quality display
+- [ ] Add matchmaking timer/status
+- [ ] Create rematch request system
+- [ ] Add disconnect handling
+- [ ] Build reconnection grace period (30 seconds)
+
+---
+
+### Phase 5: Training Mode & Polish (Weeks 18-20) 🟡 MEDIUM PRIORITY
 
 #### 1. Training Mode (Week 12)
 **Goal:** Tutorial and practice mode with coach AI
