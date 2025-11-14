@@ -1,8 +1,9 @@
 # 🔧 Technical Decisions & Architecture
 
 **Project:** Morengy - The Spirit of the North
-**Date:** January 13, 2025
-**Status:** Phase 1 Complete, Moving to Phase 2
+**Date:** January 14, 2025 (Updated for multiplayer decision)
+**Status:** Phase 1 Complete → Phase 1.5 Next (HDRP Migration)
+**Strategic Decision:** Multiplayer at Launch (28-week timeline)
 
 ---
 
@@ -107,9 +108,9 @@ Upgrade to HDRP for:
 
 ---
 
-## 3️⃣ MULTIPLAYER ARCHITECTURE: Now vs Later
+## 3️⃣ MULTIPLAYER ARCHITECTURE: Multiplayer at Launch
 
-### Decision: **Single-Player First, Multiplayer Post-Launch**
+### Decision: **~~Single-Player First~~ → Multiplayer at Launch** ⭐ UPDATED
 
 #### Original Requirement
 - Rollback netcode
@@ -117,65 +118,84 @@ Upgrade to HDRP for:
 - Ranked matchmaking
 - Cross-platform play
 
-#### Chosen Approach
+#### Initial Plan (Deferred)
 **Phase 1 Launch (Weeks 1-20):**
 - Single-player career mode ✅
 - Local 2-player versus ✅
 - No online multiplayer
 
 **Phase 2 DLC (Months 6-12):**
-- Online versus with rollback netcode
-- Matchmaking via Unity Netcode + GGPO
-- Ranked mode
-- Replay sharing
+- Add online multiplayer later
 
-#### Rationale
+#### ⭐ REVISED DECISION: Multiplayer at Launch
 
-**Why Defer Multiplayer:**
-1. **Architecture Complexity**
-   - Rollback netcode requires deterministic physics
-   - Current system uses Unity's built-in physics (non-deterministic)
-   - Would need refactor: fixed-point math, custom physics
-   - Estimated 3-4 months additional development
+**Updated Timeline:** 28 weeks (7-8 months) instead of 20 weeks
 
-2. **Backend Infrastructure**
-   - Needs dedicated servers (AWS GameLift, $500+/month)
-   - Matchmaking service (PlayFab, additional $200+/month)
-   - Anti-cheat system
-   - Player authentication
-   - Adds 2-3 months development + ongoing costs
+**Launch Day Features:**
+- ✅ Single-player career mode
+- ✅ Local 2-player versus
+- ✅ **Online versus with rollback netcode**
+- ✅ **PlayFab matchmaking (MMR/ELO)**
+- ✅ **Ranked mode**
+- ✅ Replay sharing
 
-3. **Testing Scope**
-   - Network testing requires larger QA team
-   - Lag testing across regions
-   - Balance testing with real players
-   - Adds 1-2 months to timeline
+#### Rationale for Including Multiplayer
 
-4. **Indie Reality**
-   - 70% of indie fighting games launch single-player first
-   - Validate game concept before infrastructure investment
-   - Build community organically
-   - Add multiplayer based on demand
+**Why Include Multiplayer at Launch:**
+1. **Market Expectation**
+   - Modern fighting games NEED online day 1
+   - Players expect ranked matchmaking at launch
+   - Single-player only seen as "incomplete" in 2025
+   - Reviews will penalize lack of online play
 
-**Single-Player Strengths:**
-- ✅ Exceptional AI already implemented (90% complete)
-- ✅ Career mode with 20 fights and progression
-- ✅ AI learning system (unique selling point)
-- ✅ Rival AI with evolution (no other fighting game has this)
-- ✅ Local versus for friends
+2. **Competitive Scene**
+   - Fighting games thrive on competition
+   - Online builds community faster
+   - Streamers need online content
+   - Tournament potential from day 1
 
-**Multiplayer Roadmap (If Game Successful):**
-1. **Update 1.5 (Month 4):** Local netplay improvements
-2. **Update 2.0 (Month 10):** Online versus beta
-3. **Update 2.1 (Month 11):** Ranked matchmaking
-4. **Update 2.2 (Month 12):** Cross-platform support
+3. **Replayability & Value**
+   - Online extends game life significantly
+   - Justifies $19.99 premium price
+   - Creates ongoing engagement
+   - Reduces refund rate
 
-#### Technical Preparation
-Current code is modular enough to add networking:
-- GameManager already separates rounds/matches
-- Input system can be adapted for network inputs
-- Combat system can log/replay actions
-- Will require refactor but foundation exists
+4. **Technical Feasibility**
+   - Custom rollback netcode designed (see MULTIPLAYER_ARCHITECTURE.md)
+   - Peer-to-peer architecture (no dedicated servers needed)
+   - PlayFab matchmaking affordable ($10-210/month, scales with users)
+   - Timeline extension manageable (7-8 months vs 4-5)
+
+**Implementation Plan:**
+- **Phase 3.5 (Weeks 10-13):** Rollback netcode implementation
+- **Phase 4.5 (Weeks 16-17):** PlayFab matchmaking integration
+- **Phase 6 (Weeks 22-26):** Online multiplayer testing & refinement
+
+**Additional Investment:**
+- Development time: +8 weeks
+- Development cost: +$2,800 (netcode + testing)
+- Backend costs: $10-210/month (PlayFab, scales with users)
+- Total multiplayer cost: ~$4,120 (dev + first year backend)
+
+**Total Budget:** $11,720 ($7,600 base + $4,120 multiplayer)
+
+#### Technical Architecture
+
+**Rollback Netcode (GGPO-style):**
+- Deterministic simulation (replace UnityEngine.Random)
+- 60-frame rollback buffer (1 second)
+- Input prediction and confirmation
+- 12 bytes/frame serialization (5.76 Kbps bandwidth)
+- Peer-to-peer with relay fallback
+
+**Matchmaking:**
+- PlayFab SDK integration
+- MMR/ELO system (K-factor 32, starting 1000)
+- Region-based matchmaking
+- Connection quality display
+- Rank tiers (Bronze → Silver → Gold → Platinum → Diamond → Master)
+
+**See:** [MULTIPLAYER_ARCHITECTURE.md](MULTIPLAYER_ARCHITECTURE.md) for complete specification
 
 ---
 
